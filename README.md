@@ -1,40 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🩺 WellSync – Personal Health Tracking App
 
-## Getting Started
+**WellSync** is a full-stack **Next.js (TypeScript)** web application that allows users to monitor, record, and analyze their daily health parameters such as weight, sleep, blood pressure, and physical activity.  
+Developed as a **school project** by two junior software engineering students, it combines clean UI, responsive charts, and lightweight AI for health trend predictions.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Project Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+WellSync provides an intuitive and interactive way for users to take control of their wellness journey.  
+It’s ideal for fitness enthusiasts, nutrition tracking, or light medical follow-up.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 🎯 Core Objectives
+- Record daily health metrics.
+- Visualize progress through charts.
+- Set and monitor personal goals.
+- Receive reminders and alerts.
+- Experiment with AI for predictive health insights.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+---
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## ⚙️ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 👤 User Management
+- Sign up / Sign in with **NextAuth.js** (Email or Google)
+- Profile customization with personal data & goals
+- Secure session handling and authentication
 
-## Learn More
+### 📊 Health Tracking
+- Add, edit, and delete daily health measurements
+- Notes for personal comments
+- History and statistics of tracked data
 
-To learn more about Next.js, take a look at the following resources:
+### 📈 Visualization & Analytics
+- Interactive charts using **Recharts** or **Chart.js**
+- Weekly/monthly summaries
+- Alerts when values go beyond normal range
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+### 🔔 Notifications & Reminders
+- Daily input reminders
+- Goal completion or anomaly alerts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🌐 Public Pages & SEO
+- Public health articles (ISR/SSG)
+- About and contact pages
+- Basic SEO setup for discoverability
 
-## Deploy on Vercel
+### 🤖 AI & Machine Learning (Prototype)
+- Basic anomaly detection for abnormal readings
+- Linear regression model to predict weight/sleep trends (using **TensorFlow.js**)
+- Integration with the dashboard for visualization
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## 🧩 Tech Stack
+
+| Layer | Technologies |
+|:------|:--------------|
+| **Frontend** | Next.js 14, React 18, TypeScript, Tailwind CSS |
+| **Backend** | Next.js API Routes, Mongoose, MongoDB|
+| **Auth** | NextAuth.js |
+| **Charts** | Recharts / Chart.js |
+| **AI** | TensorFlow.js |
