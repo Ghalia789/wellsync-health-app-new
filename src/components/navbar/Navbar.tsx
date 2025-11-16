@@ -1,17 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import SignInButton from "../buttons/SignInButton";
+import { useSession, signOut } from "next-auth/react";
+
+import { ChevronDown, User, LogOut, Settings, TrendingUp, BookOpen, Clock } from "lucide-react";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   return (
     <nav className="bg-[var(--mint-500)] text-white shadow-md font-[var(--font-poppins)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-        {/* Left: Logo */}
+
+        {/* Logo */}
         <div className="flex items-center space-x-3">
           <Image
             src="/logo_WellSync.png"
@@ -25,34 +43,71 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* Center: Nav links */}
+        {/* Links */}
         {isLoggedIn && (
-          <div className="hidden md:flex space-x-6 text-[var(--mint-900)]">
-            <Link href="/dashboard" className="hover:text-white transition">
-              Dashboard
-            </Link>
-            <Link href="/appointments" className="hover:text-white transition">
-              Appointments
-            </Link>
-            <Link href="/profile" className="hover:text-white transition">
-              Profile
-            </Link>
+          <div className="hidden md:flex space-x-8 font-medium">
+            {[
+              { href: "/dashboard", label: "Dashboard" },
+              { href: "/history", label: "History", icon: <Clock size={16} /> },
+              { href: "/goals", label: "Goals", icon: <TrendingUp size={16} /> },
+              { href: "/tips", label: "Tips", icon: <BookOpen size={16} /> },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="relative flex items-center gap-1 text-white/90 hover:text-white transition-colors duration-300 after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-[2px] after:bg-[var(--mint-100)] after:transition-all after:duration-300 hover:after:w-full"
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
           </div>
         )}
 
-        {/* Right: Sign-in or Logout */}
-        <div>
-          {!isLoggedIn ? (
-            <SignInButton />
-          ) : (
+        {/* User section */}
+        {!isLoggedIn ? (
+          <Link
+            href="/login"
+            className="px-4 py-2 rounded-full font-medium bg-white text-[var(--mint-500)] relative overflow-hidden before:absolute before:inset-0 before:bg-[var(--mint-300)] before:scale-x-0 before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100 hover:text-white z-10"
+          >
+            Sign In
+          </Link>
+        ) : (
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={() => setIsLoggedIn(false)}
-              className="bg-white text-[var(--mint-500)] font-medium px-4 py-2 rounded-full hover:bg-[var(--mint-800)] transition"
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-2 px-4 py-2 rounded-full font-medium bg-white text-[var(--mint-600)] hover:bg-[var(--mint-100)] hover:text-white transition-colors duration-300"
             >
-              Logout
+              {session?.user?.name ?? "Account"}
+              <ChevronDown size={16} />
             </button>
-          )}
-        </div>
+
+            {open && (
+              <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg text-gray-800 py-2">
+                {[
+                  { href: "/profile", label: "Profile", icon: <User size={16} /> },
+                  { href: "/settings", label: "Settings", icon: <Settings size={16} /> },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-[var(--mint-100)] hover:text-white transition-colors duration-300"
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                ))}
+
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-[var(--indian-red-300)] hover:text-white transition-colors duration-300 text-red-600"
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

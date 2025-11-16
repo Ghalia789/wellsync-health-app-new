@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
 import "@/styles/globals.css";
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <SessionProvider session={(pageProps as any).session}>
       <Toaster
         position="top-center"
         toastOptions={{
@@ -17,6 +20,6 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       />
       <Component {...pageProps} />
-    </>
+    </SessionProvider>
   );
 }
