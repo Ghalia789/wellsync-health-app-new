@@ -26,10 +26,7 @@ export default function Navbar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -47,7 +44,7 @@ export default function Navbar() {
             alt="WellSync Logo"
             width={40}
             height={40}
-            className="rounded-full w-10 h-10"
+            className="rounded-full"
           />
           <span className="font-semibold text-lg tracking-wide">
             WellSync Health
@@ -60,11 +57,7 @@ export default function Navbar() {
             {[
               { href: "/dashboard", label: "Dashboard" },
               { href: "/history", label: "History", icon: <Clock size={16} /> },
-              {
-                href: "/goals",
-                label: "Goals",
-                icon: <TrendingUp size={16} />,
-              },
+              { href: "/goals", label: "Goals", icon: <TrendingUp size={16} /> },
               { href: "/tips", label: "Tips", icon: <BookOpen size={16} /> },
             ].map((link) => (
               <Link
