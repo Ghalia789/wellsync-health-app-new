@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Font variables imported in layout/index */
+  --font-poppins: "Poppins", sans-serif;
+  --font-nunito: "Nunito", sans-serif;
+
+  /* --- Mint palette --- */
+  --mint-100: #122b1e;
+  --mint-200: #25563c;
+  --mint-300: #37815b;
+  --mint-400: #49ab79;
+  --mint-500: #72c298;
+  --mint-600: #8dceac;
+  --mint-700: #a9dac1;
+  --mint-800: #c6e7d6;
+  --mint-900: #e2f3ea;
+
+  /* --- Air Superiority Blue --- */
+  --air-superiority-blue-100: #11222e;
+  --air-superiority-blue-200: #22445d;
+  --air-superiority-blue-300: #32668b;
+  --air-superiority-blue-400: #4388ba;
+  --air-superiority-blue-500: #6fa5cb;
+  --air-superiority-blue-600: #8db8d6;
+  --air-superiority-blue-700: #aac9e0;
+  --air-superiority-blue-800: #c6dbea;
+  --air-superiority-blue-900: #e3edf5;
+
+  /* --- Tea Green --- */
+  --tea-green-100: #27331c;
+  --tea-green-200: #4d6538;
+  --tea-green-300: #749854;
+  --tea-green-400: #9bb981;
+  --tea-green-500: #c3d5b3;
+  --tea-green-600: #cfdec2;
+  --tea-green-700: #dbe6d2;
+  --tea-green-800: #e7eee1;
+  --tea-green-900: #f3f7f0;
+
+  /* --- Azure Web --- */
+  --azure-web-100: #213536;
+  --azure-web-200: #416a6c;
+  --azure-web-300: #639ea1;
+  --azure-web-400: #99c0c2;
+  --azure-web-500: #d0e2e3;
+  --azure-web-600: #d9e7e8;
+  --azure-web-700: #e2edee;
+  --azure-web-800: #ecf3f4;
+  --azure-web-900: #f5f9f9;
+
+  /* --- Indian Red --- */
+  --indian-red-100: #330d0c;
+  --indian-red-200: #651b17;
+  --indian-red-300: #982823;
+  --indian-red-400: #cb362e;
+  --indian-red-500: #db645e;
+  --indian-red-600: #e2827d;
+  --indian-red-700: #e9a19e;
+  --indian-red-800: #f0c1be;
+  --indian-red-900: #f8e0df;
+
+  /* --- Harvest Gold --- */
+  --harvest-gold-100: #2d2005;
+  --harvest-gold-200: #59400a;
+  --harvest-gold-300: #866110;
+  --harvest-gold-400: #b38115;
+  --harvest-gold-500: #dfa11a;
+  --harvest-gold-600: #e9b545;
+  --harvest-gold-700: #efc873;
+  --harvest-gold-800: #f4daa2;
+  --harvest-gold-900: #faedd0;
+
+  /* --- Asparagus --- */
+  --asparagus-100: #162313;
+  --asparagus-200: #2c4626;
+  --asparagus-300: #426939;
+  --asparagus-400: #588d4c;
+  --asparagus-500: #6faa62;
+  --asparagus-600: #8dbc82;
+  --asparagus-700: #a9cda2;
+  --asparagus-800: #c6ddc1;
+  --asparagus-900: #e2eee0;
+
+  /* --- Glaucous --- */
+  --glaucous-100: #101928;
+  --glaucous-200: #213250;
+  --glaucous-300: #314b77;
+  --glaucous-400: #41649f;
+  --glaucous-500: #5c80bc;
+  --glaucous-600: #7d99ca;
+  --glaucous-700: #9db2d7;
+  --glaucous-800: #becce4;
+  --glaucous-900: #dee5f2;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins);
+  --font-alt: var(--font-nunito);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    
+    /* Dark-mode remap: pick slightly deeper tones for each palette */
+    --mint-500: #37815b; /* maps to mint-300 */
+    --air-superiority-blue-500: #32668b; /* maps to 300 */
+    --tea-green-500: #749854; /* maps to 300 */
+    --azure-web-500: #639ea1; /* maps to 300 */
+    --indian-red-500: #982823; /* maps to 300 */
+    --harvest-gold-500: #866110; /* maps to 300 */
+    --asparagus-500: #426939; /* maps to 300 */
+    --glaucous-500: #314b77; /* maps to 300 */
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), var(--font-nunito), sans-serif;
+}
