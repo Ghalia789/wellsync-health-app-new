@@ -4,8 +4,17 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import DarkModeToggle from "../buttons/DarkModeToggle";
 
-import { ChevronDown, User, LogOut, Settings, TrendingUp, BookOpen, Clock } from "lucide-react";
+import {
+  ChevronDown,
+  User,
+  LogOut,
+  Settings,
+  TrendingUp,
+  BookOpen,
+  Clock,
+} from "lucide-react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -26,9 +35,8 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[var(--mint-500)] text-white shadow-md font-[var(--font-poppins)]">
+    <nav className="bg-[var(--mint-300)] text-white shadow-md font-[var(--font-poppins)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <Image
@@ -64,13 +72,39 @@ export default function Navbar() {
           </div>
         )}
 
+        {/* Toggle */}
+        <div className="hidden md:flex">
+          <DarkModeToggle />
+        </div>
         {/* User section */}
         {!isLoggedIn ? (
           <Link
             href="/login"
-            className="px-4 py-2 rounded-full font-medium bg-white text-[var(--mint-500)] relative overflow-hidden before:absolute before:inset-0 before:bg-[var(--mint-300)] before:scale-x-0 before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100 hover:text-white z-10"
+            className="
+    group
+    relative px-4 py-2 rounded-full font-medium
+    bg-white text-[var(--mint-500)]
+    overflow-hidden
+    transition-colors duration-300
+  "
           >
-            Sign In
+            {/* TEXTE (toujours au-dessus) */}
+            <span className="relative z-10 transition-colors duration-300">
+              Sign In
+            </span>
+
+            {/* FOND ANIMÉ AU HOVER (derrière le texte) */}
+            <span
+              className="
+      absolute inset-0
+      bg-[var(--mint-600)]
+      scale-x-0
+      origin-left
+      transition-transform duration-300
+      ease-out
+      group-hover:scale-x-100
+    "
+            ></span>
           </Link>
         ) : (
           <div className="relative" ref={dropdownRef}>
@@ -85,8 +119,16 @@ export default function Navbar() {
             {open && (
               <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg text-gray-800 py-2">
                 {[
-                  { href: "/profile", label: "Profile", icon: <User size={16} /> },
-                  { href: "/settings", label: "Settings", icon: <Settings size={16} /> },
+                  {
+                    href: "/profile",
+                    label: "Profile",
+                    icon: <User size={16} />,
+                  },
+                  {
+                    href: "/settings",
+                    label: "Settings",
+                    icon: <Settings size={16} />,
+                  },
                 ].map((item) => (
                   <Link
                     key={item.href}
