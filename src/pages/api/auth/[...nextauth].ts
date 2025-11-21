@@ -8,7 +8,7 @@ import connectMongo from "../../../../utils/db";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // 🟢 Login par email + mot de passe
+    // Login par email + mot de passe
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
 
-    // 🟣 Login via Google
+    // Login via Google
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    // 🔥 SIGN IN → assure que l'utilisateur Google existe dans MongoDB
+    // SIGN IN → assure que l'utilisateur Google existe dans MongoDB
     async signIn({ user, account }) {
       await connectMongo();
 
@@ -69,13 +69,13 @@ export const authOptions: NextAuthOptions = {
       }
 
 
-      // ⚠️ Important : on injecte l’ObjectId de MongoDB dans "user.id"
+      // Important : on injecte l’ObjectId de MongoDB dans "user.id"
       if (existingUser) user.id = existingUser._id.toString();
 
       return true;
     },
 
-    // 🔐 JWT → stocke l'ObjectId Mongo dans le token
+    // JWT → stocke l'ObjectId Mongo dans le token
     async jwt({ token, user }) {
       if (user) {
         token.user = {
@@ -88,7 +88,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    // 💾 SESSION → renvoie token.user au front-end
+    // SESSION → renvoie token.user au front-end
     async session({ session, token }) {
       session.user = token.user as any;
       return session;

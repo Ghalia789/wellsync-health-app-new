@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import DarkModeToggle from "../buttons/DarkModeToggle";
 
 import {
   ChevronDown,
@@ -37,7 +38,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[var(--mint-500)] text-white shadow-md font-[var(--font-poppins)]">
+    <nav className="bg-[var(--mint-300)] text-white shadow-md font-[var(--font-poppins)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-3">
@@ -78,6 +79,10 @@ export default function Navbar() {
           </div>
         )}
 
+        {/* Toggle */}
+        <div className="hidden md:flex">
+          <DarkModeToggle />
+        </div>
         {/* User section */}
         {!isLoggedIn ? (
           <Link
