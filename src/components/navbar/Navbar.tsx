@@ -34,21 +34,33 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Add styles for navbar links underline
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .navbar-link::after {
+        background-color: var(--navbar-link-underline) !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <nav className="bg-[var(--mint-300)] text-white shadow-md font-[var(--font-poppins)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-3">
           <Image
-            src="/logo_WellSync.png"
+            src="/logo_WellSync_clear.png"
             alt="WellSync Logo"
-            width={40}
-            height={40}
-            className="rounded-full"
+            width={150}
+            height={60}
+            className="rounded-full bg-amber-50"
           />
-          <span className="font-semibold text-lg tracking-wide">
-            WellSync Health
-          </span>
+        
         </div>
 
         {/* Links */}
@@ -63,7 +75,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative flex items-center gap-1 text-white/90 hover:text-white transition-colors duration-300 after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-[2px] after:bg-[var(--mint-100)] after:transition-all after:duration-300 hover:after:w-full"
+                className="navbar-link relative flex items-center gap-1 transition-colors duration-300 after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:transition-all after:duration-300 hover:after:w-full"
+                style={{
+                  color: 'var(--navbar-text)'
+                }}
               >
                 {link.icon}
                 {link.label}
@@ -83,7 +98,7 @@ export default function Navbar() {
             className="
     group
     relative px-4 py-2 rounded-full font-medium
-    bg-white text-[var(--mint-500)]
+    bg-white text-(--mint-500)
     overflow-hidden
     transition-colors duration-300
   "
@@ -97,7 +112,7 @@ export default function Navbar() {
             <span
               className="
       absolute inset-0
-      bg-[var(--mint-600)]
+      bg-(--mint-600)
       scale-x-0
       origin-left
       transition-transform duration-300
@@ -110,14 +125,22 @@ export default function Navbar() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setOpen(!open)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full font-medium bg-white text-[var(--mint-600)] hover:bg-[var(--mint-100)] hover:text-white transition-colors duration-300"
+              className="flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors duration-300"
+              style={{
+                backgroundColor: '#ffffff',
+                color: 'var(--mint-600)',
+                borderColor: 'transparent'
+              }}
             >
               {session?.user?.name ?? "Account"}
               <ChevronDown size={16} />
             </button>
 
             {open && (
-              <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg text-gray-800 py-2">
+              <div className="absolute right-0 mt-2 w-44 shadow-lg rounded-lg py-2" style={{
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)'
+              }}>
                 {[
                   {
                     href: "/profile",
@@ -133,7 +156,18 @@ export default function Navbar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-2 px-4 py-2 hover:bg-[var(--mint-100)] hover:text-white transition-colors duration-300"
+                    className="flex items-center gap-2 px-4 py-2 transition-colors duration-300"
+                    style={{
+                      color: 'var(--dropdown-text)'
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--dropdown-hover-bg)';
+                      (e.currentTarget as HTMLElement).style.color = 'var(--dropdown-hover-text)';
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                      (e.currentTarget as HTMLElement).style.color = 'var(--dropdown-text)';
+                    }}
                   >
                     {item.icon}
                     {item.label}
@@ -142,7 +176,19 @@ export default function Navbar() {
 
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="w-full text-left flex items-center gap-2 px-4 py-2 hover:bg-[var(--indian-red-300)] hover:text-white transition-colors duration-300 text-red-600"
+                  className="w-full text-left flex items-center gap-2 px-4 py-2 transition-colors duration-300"
+                  style={{
+                    color: 'var(--red-400)',
+                    backgroundColor: 'transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--red-300)';
+                    (e.currentTarget as HTMLElement).style.color = '#ffffff';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = 'var(--red-400)';
+                  }}
                 >
                   <LogOut size={16} /> Logout
                 </button>
