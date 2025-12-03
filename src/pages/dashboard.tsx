@@ -6,8 +6,10 @@ import Navbar from "@/components/navbar/Navbar";
 import MeasureForm from "@/components/form/MeasureForm";
 import MeasureList from "@/components/measure/MeasureList";
 import MeasureChart from "@/components/measure/MeasureChart";
+import MLReportComponent from "@/components/MLReportComponent";
+import { AlertCircle, TrendingUp, AlertTriangle, CheckCircle } from "lucide-react";
 
-type TabType = "overview" | "add" | "history";
+type TabType = "overview" | "add" | "history" | "report";
 
 const DashboardPage = () => {
   const [message, setMessage] = useState("");
@@ -19,6 +21,14 @@ const DashboardPage = () => {
   const [currentWeight, setCurrentWeight] = useState<number | null>(null);
   const [thisWeekCount, setThisWeekCount] = useState<number | null>(null);
   const [goalStatus, setGoalStatus] = useState<string | null>(null);
+  
+  // ML Analysis states
+  const [healthScore, setHealthScore] = useState<number | null>(null);
+  const [anomalies, setAnomalies] = useState<any[]>([]);
+  const [mlSummary, setMlSummary] = useState<string | null>(null);
+  const [trends, setTrends] = useState<any>({});
+  const [mlLoading, setMlLoading] = useState(false);
+  
   const router = useRouter();
 
   // fetch overview stats (moved above effect to satisfy hook deps)
@@ -50,12 +60,46 @@ const DashboardPage = () => {
 
       // simple goal status heuristic: if last weight exists show On track
       setGoalStatus(latestWeight ? "On track" : "—");
+
+      // Fetch ML analysis if measures exist
+      if (measures.length > 0) {
+        await fetchMLAnalysis(measures);
+      }
     } catch (err) {
       console.error("Failed to load overview stats:", err);
       setTotalRecords(null);
       setCurrentWeight(null);
       setThisWeekCount(null);
       setGoalStatus(null);
+    }
+  }
+
+  // Fetch ML analysis
+  async function fetchMLAnalysis(measures?: any[]) {
+    setMlLoading(true);
+    try {
+      const res = await fetch("/api/ml/analyze-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ measures }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.warn("ML analysis failed:", data);
+        return;
+      }
+
+      setHealthScore(data.health_score || null);
+      setAnomalies(data.anomalies || []);
+      setMlSummary(data.summary || null);
+      setTrends(data.trends || {});
+    } catch (err) {
+      console.error("Failed to fetch ML analysis:", err);
+      // Non-critical error, don't interrupt user experience
+    } finally {
+      setMlLoading(false);
     }
   }
 
@@ -129,6 +173,40 @@ const DashboardPage = () => {
         {/* Quick Stats Cards (Overview Tab) */}
         {activeTab === "overview" && (
           <div className="space-y-6">
+            {/* ML Health Score Card */}
+            {healthScore !== null && (
+              <div className="bg-gradient-to-r from-[var(--mint-500)] to-[var(--air-superiority-blue-500)] rounded-lg shadow p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-90">Overall Health Score</p>
+                    <p className="text-5xl font-bold mt-2">{healthScore.toFixed(0)}</p>
+                    <p className="text-sm mt-2 opacity-90">{mlSummary || "Loading analysis..."}</p>
+                  </div>
+                  <div className="text-6xl opacity-50">💪</div>
+                </div>
+              </div>
+            )}
+
+            {/* Anomalies Alert */}
+            {anomalies.length > 0 && (
+              <div className="bg-red-50 border-l-4 border-red-500 rounded p-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="text-red-500 mt-1 flex-shrink-0" size={20} />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-red-800">Health Alerts</h3>
+                    <div className="mt-2 space-y-2">
+                      {anomalies.map((anomaly, idx) => (
+                        <div key={idx} className="text-sm text-red-700">
+                          <p className="font-medium">{anomaly.message}</p>
+                          {anomaly.tip && <p className="text-xs mt-1 italic">{anomaly.tip}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-4 border-l-4 border-[var(--mint-500)]">
@@ -187,6 +265,12 @@ const DashboardPage = () => {
               >
                 View History
               </button>
+              <button
+                onClick={() => setActiveTab("report")}
+                className="bg-[var(--air-superiority-blue-500)] hover:bg-[var(--air-superiority-blue-400)] text-white px-6 py-3 rounded-lg font-medium transition"
+              >
+                📊 Full Report
+              </button>
             </div>
           </div>
         )}
@@ -237,6 +321,13 @@ const DashboardPage = () => {
               }}
               refreshToggle={refresh}
             />
+          </div>
+        )}
+
+        {/* Full Report Tab */}
+        {activeTab === "report" && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <MLReportComponent onClose={() => setActiveTab("overview")} />
           </div>
         )}
       </div>

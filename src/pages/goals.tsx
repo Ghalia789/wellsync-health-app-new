@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar/Navbar";
 import GoalForm from "@/components/form/GoalForm";
 import { goalMotivationHint } from "../../utils/goalMessages";
 import { pickRandomMessage } from "../../utils/randomMessage";
-import { TrendingUp, Target, Calendar, Heart } from "lucide-react";
+import { TrendingUp, Target, Calendar, Heart, Lightbulb, AlertCircle } from "lucide-react";
 
 const GoalsPage = () => {
   const [goals, setGoals] = useState<any[]>([]);
@@ -12,6 +12,10 @@ const GoalsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<any | null>(null);
   const [motivation, setMotivation] = useState("");
+  
+  // ML Analysis states
+  const [goalAnalysis, setGoalAnalysis] = useState<any[]>([]);
+  const [mlLoading, setMlLoading] = useState(false);
 
   // Load goals
   async function fetchGoals() {
@@ -22,10 +26,41 @@ const GoalsPage = () => {
       if (!res.ok) throw new Error(data.error || "Failed");
 
       setGoals(data.goals || []);
+
+      // Fetch ML analysis for goals
+      if (data.goals && data.goals.length > 0) {
+        await fetchGoalAnalysis(data.goals);
+      }
     } catch (e) {
       console.error("Failed to load goals", e);
     }
     setLoading(false);
+  }
+
+  // Fetch ML analysis for goals
+  async function fetchGoalAnalysis(goalsData: any[]) {
+    setMlLoading(true);
+    try {
+      const res = await fetch("/api/ml/goal-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goals: goalsData }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.warn("Goal analysis failed:", data);
+        return;
+      }
+
+      setGoalAnalysis(data.insights || []);
+    } catch (err) {
+      console.error("Failed to fetch goal analysis:", err);
+      // Non-critical error
+    } finally {
+      setMlLoading(false);
+    }
   }
 
   // Generate a friendly hint message
@@ -108,6 +143,11 @@ const GoalsPage = () => {
                 ? "var(--gold-500)"
                 : "var(--red-500)";
 
+            // Find ML analysis for this goal
+            const mlAnalysis = goalAnalysis.find(
+              (analysis: any) => analysis.goal_type === goal.type
+            );
+
             return (
               <div
                 key={goal._id}
@@ -155,6 +195,26 @@ const GoalsPage = () => {
                 <p className="text-sm mb-4" style={{ color: progressColor }}>
                   {goal.progress.toFixed(1)}% complete
                 </p>
+
+                {/* ML Analysis Section */}
+                {mlAnalysis && (
+                  <div className="bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-500 p-3 rounded mb-4">
+                    {mlAnalysis.tips && mlAnalysis.tips.length > 0 && (
+                      <div>
+                        <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-1">
+                          <Lightbulb size={14} /> AI Tips
+                        </p>
+                        <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                          {mlAnalysis.tips.slice(0, 2).map((tip: string, idx: number) => (
+                            <li key={idx} className="list-disc list-inside">
+                              {tip}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Edit */}
                 <button

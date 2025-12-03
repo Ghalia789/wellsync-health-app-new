@@ -11,6 +11,12 @@ const UserProfileSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  sexe: {
+    type: String,
+    enum: ["male", "female"],
+    default: "male",
+    required: true,
+  },
   height: {
     type: Number, // in cm
     default: null,
