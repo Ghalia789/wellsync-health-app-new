@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { goalMotivationMessages} from "../../../utils/goalMessages"
+import SleepQuestionnaire from "./SleepQuestionnaire";
+import StressQuestionnaire from "./StressQuestionnaire";
 
 type Props = {
   initial?: any;
@@ -40,6 +42,8 @@ const GoalForm = ({ initial, onSaved, onCancel }: Props) => {
   );
 
   const [loading, setLoading] = useState(false);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [goalCreated, setGoalCreated] = useState(false);
 
   // motivational message shown in the form
   const [message, setMessage] = useState(getRandomMessage(type));
@@ -91,6 +95,12 @@ const GoalForm = ({ initial, onSaved, onCancel }: Props) => {
         }
       });
 
+      // If this is a new goal with questionnaire support, prompt user to fill questionnaire
+      if (!initial?._id && (type === "SLEEP_IMPROVEMENT" || type === "STRESS_REDUCTION")) {
+        setGoalCreated(true);
+        setShowQuestionnaire(true);
+      }
+
       onSaved && onSaved(data.goal || data);
     } catch (err: any) {
       console.error("GoalForm error:", err);
@@ -99,6 +109,30 @@ const GoalForm = ({ initial, onSaved, onCancel }: Props) => {
       setLoading(false);
     }
   };
+
+  if (showQuestionnaire && goalCreated) {
+    const qProps = {
+      onSaved: () => {
+        setShowQuestionnaire(false);
+        setGoalCreated(false);
+      },
+      onCancel: () => {
+        setShowQuestionnaire(false);
+        setGoalCreated(false);
+      },
+    };
+
+    return (
+      <div className="space-y-4">
+        <div className="p-4 rounded-lg bg-[var(--azure-web-900)] border-l-4 border-[var(--mint-500)] text-gray-700">
+          <p className="font-medium mb-2">Fill your {type === "SLEEP_IMPROVEMENT" ? "Sleep" : "Stress"} Questionnaire</p>
+          <p className="text-sm text-gray-600">Answer a few quick questions to start tracking your progress:</p>
+        </div>
+        {type === "SLEEP_IMPROVEMENT" && <SleepQuestionnaire {...qProps} />}
+        {type === "STRESS_REDUCTION" && <StressQuestionnaire {...qProps} />}
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={submit} className="space-y-4">
