@@ -15,6 +15,23 @@ function computeProgress(current: number, target: number, type: string) {
     case "STRESS_REDUCTION":
       // Progress = how close current is to lower target
       return Math.min(100, Math.max(0, ((current - target) / (current || 1)) * 100));
+    case "SLEEP_IMPROVEMENT":
+      // For sleep improvement: higher sleep_score = better progress
+      // sleep_score: 0-100 (higher = better sleep)
+      // target: desired sleep_score (higher value)
+      return Math.min(100, Math.max(0, (current / target) * 100));
+    
+    case "MUSCLE_GAIN":
+      // Higher weight = better progress
+      return Math.min(100, Math.max(0, (current / target) * 100));
+      
+    case "HEART_HEALTH":
+      // Lower blood pressure = better progress
+      return Math.min(100, Math.max(0, ((target - current) / target) * 100));
+      
+    case "DIABETES_CONTROL":
+      // Lower glucose = better progress
+      return Math.min(100, Math.max(0, ((target - current) / target) * 100));
 
     default:
       // General case: increase toward target

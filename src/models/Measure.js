@@ -11,6 +11,10 @@ const MeasureSchema = new mongoose.Schema({
   value: { type: Number, required: true },
   unit: { type: String, default: "" },
   timestamp: { type: Date, default: Date.now },
+  metadata: { 
+    type: mongoose.Schema.Types.Mixed, 
+    default: {} 
+  }, // Store detailed questionnaire answers
   notes: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

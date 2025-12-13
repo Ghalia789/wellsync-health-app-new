@@ -11,6 +11,16 @@ import {
   Clock,
 } from "lucide-react";
 
+interface SleepStressTrend {
+  analysis_type: string;
+  measures_analyzed: number;
+  sleep_summary?: any;
+  stress_summary?: any;
+  trends?: Record<string, any>;
+  anomalies?: any[];
+  recommendations?: string[];
+}
+
 interface MLReport {
   generated_at: string;
   summary: string;
@@ -28,6 +38,7 @@ interface MLReportProps {
 
 const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
   const [report, setReport] = useState<MLReport | null>(null);
+  const [sleepStress, setSleepStress] = useState<SleepStressTrend | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,18 +50,20 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
     setLoading(true);
     setError(null);
     try {
+      // Fetch general report
       const response = await fetch("/api/ml/full-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to generate report");
-      }
-
+      if (!response.ok) throw new Error(data.error || "Failed to generate report");
       setReport(data.report || data);
+
+      // Fetch sleep/stress analysis
+      const sleepResponse = await fetch("/api/ml/sleep-stress-analysis");
+      const sleepData = await sleepResponse.json();
+      if (sleepResponse.ok) setSleepStress(sleepData);
+
       toast.success("📊 Report generated successfully!");
     } catch (err: any) {
       const errorMsg = err.message || "Failed to generate report";
@@ -113,6 +126,12 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
     return "bg-red-50";
   };
 
+  const sleepStressGoals =
+    report.goals?.filter(goal =>
+      goal.goal_type?.toLowerCase().includes("sleep") ||
+      goal.goal_type?.toLowerCase().includes("stress")
+    ) || [];
+
   return (
     <div className="space-y-6">
       {/* Header with Close Button */}
@@ -134,18 +153,14 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
       </div>
 
       {/* Health Score Card */}
-      <div
-        className={`rounded-lg p-8 ${getHealthScoreBg(report.health_score)}`}
-      >
+      <div className={`rounded-lg p-8 ${getHealthScoreBg(report.health_score)}`}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-700">Overall Health Score</p>
             <p className={`text-6xl font-bold mt-2 ${getHealthScoreColor(report.health_score)}`}>
               {Math.round(report.health_score)}
             </p>
-            <p className="text-base mt-3 text-gray-700 font-semibold">
-              {report.summary}
-            </p>
+            <p className="text-base mt-3 text-gray-700 font-semibold">{report.summary}</p>
           </div>
           <div className="text-7xl opacity-30">💚</div>
         </div>
@@ -210,13 +225,9 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
           <div className="space-y-3">
             {Object.entries(report.trends).map(([measureType, trendData]: [string, any]) => (
               <div key={measureType} className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                <p className="font-semibold text-blue-900 capitalize">
-                  {measureType.replace(/_/g, " ")}
-                </p>
+                <p className="font-semibold text-blue-900 capitalize">{measureType.replace(/_/g, " ")}</p>
                 {trendData.method && (
-                  <p className="text-xs text-blue-700 mt-1">
-                    Method: {trendData.method}
-                  </p>
+                  <p className="text-xs text-blue-700 mt-1">Method: {trendData.method}</p>
                 )}
                 {trendData.slope_per_sec !== undefined && (
                   <p className="text-sm text-blue-800 mt-2 flex items-center gap-2">
@@ -234,9 +245,7 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
                   </p>
                 )}
                 {trendData.forecast && trendData.forecast.length > 0 && (
-                  <p className="text-xs text-blue-700 mt-2">
-                    📈 Forecast available for next 7 days
-                  </p>
+                  <p className="text-xs text-blue-700 mt-2">📈 Forecast available for next 7 days</p>
                 )}
               </div>
             ))}
@@ -244,7 +253,87 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
         </div>
       )}
 
-      {/* Goal Progress */}
+      {/* Sleep & Stress Analysis */}
+      {(sleepStress || sleepStressGoals.length > 0) && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <Clock size={20} className="text-indigo-500" />
+            Sleep & Stress Analysis
+          </h3>
+
+          {sleepStress && (
+            <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded space-y-2">
+              <p className="text-indigo-700 font-medium">
+                Measures analyzed: {sleepStress.measures_analyzed}
+              </p>
+              {sleepStress.sleep_summary && (
+                <p className="text-sm text-indigo-800">💤 Sleep Summary: {sleepStress.sleep_summary}</p>
+              )}
+              {sleepStress.stress_summary && (
+                <p className="text-sm text-indigo-800">😰 Stress Summary: {sleepStress.stress_summary}</p>
+              )}
+
+              {sleepStress.trends && Object.keys(sleepStress.trends).length > 0 && (
+                <div className="space-y-2 mt-2">
+                  {Object.entries(sleepStress.trends).map(([type, trend]: [string, any]) => (
+                    <div key={type} className="bg-indigo-100 p-2 rounded border border-indigo-200">
+                      <p className="text-indigo-900 font-semibold capitalize">{type.replace(/_/g, " ")}</p>
+                      {trend.slope_per_sec !== undefined && (
+                        <p className="text-sm flex items-center gap-2">
+                          {trend.slope_per_sec > 0 ? <>📈 Increasing trend</> : <>📉 Decreasing trend</>}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {sleepStress.recommendations && sleepStress.recommendations.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-indigo-800 font-medium">💡 Recommendations:</p>
+                  <ul className="list-disc list-inside text-indigo-700 text-sm space-y-1">
+                    {sleepStress.recommendations.map((rec: string, idx: number) => (
+                      <li key={idx}>{rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {sleepStressGoals.length > 0 && (
+            <div className="space-y-2 mt-2">
+              {sleepStressGoals.map((goal: any, idx: number) => (
+                <div key={idx} className="bg-indigo-50 border-l-4 border-indigo-500 p-3 rounded">
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="font-semibold text-indigo-900 capitalize">{goal.goal_type.replace(/_/g, " ")}</p>
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded ${
+                        goal.status === "completed" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
+                      {goal.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-indigo-800">
+                    Current: <span className="font-semibold">{goal.current?.toFixed(2)}</span> / Target:{" "}
+                    <span className="font-semibold">{goal.target?.toFixed(2)}</span>
+                  </p>
+                  <div className="w-full bg-gray-300 rounded-full h-2 mt-1 mb-2">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all"
+                      style={{ width: `${Math.min(100, goal.progress_pct)}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-indigo-700">{goal.progress_pct?.toFixed(1)}% complete</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* General Goal Progress */}
       {report.goals && report.goals.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
@@ -252,57 +341,45 @@ const MLReportComponent: React.FC<MLReportProps> = ({ onClose }) => {
             Goal Analysis
           </h3>
           <div className="space-y-3">
-            {report.goals.map((goal: any, idx: number) => (
-              <div key={idx} className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <p className="font-semibold text-purple-900 capitalize">
-                    {goal.goal_type?.replace(/_/g, " ")}
-                  </p>
-                  <span
-                    className={`text-xs font-medium px-2 py-1 rounded ${
-                      goal.status === "completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}
-                  >
-                    {goal.status}
-                  </span>
-                </div>
-
-                <p className="text-sm text-purple-800 mb-2">
-                  Current: <span className="font-semibold">{goal.current?.toFixed(2)}</span> / Target:{" "}
-                  <span className="font-semibold">{goal.target?.toFixed(2)}</span>
-                </p>
-
-                {/* Progress Bar */}
-                <div className="w-full bg-gray-300 rounded-full h-2 mb-2">
-                  <div
-                    className="h-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 transition-all"
-                    style={{
-                      width: `${Math.min(100, goal.progress_pct)}%`,
-                    }}
-                  />
-                </div>
-
-                <p className="text-xs text-purple-700 mb-3">
-                  {goal.progress_pct?.toFixed(1)}% complete
-                </p>
-
-                {/* Tips */}
-                {goal.tips && goal.tips.length > 0 && (
-                  <div className="bg-white rounded p-2 border border-purple-200">
-                    <p className="text-xs font-medium text-purple-800 mb-1">💡 Tips:</p>
-                    <ul className="text-xs text-purple-700 space-y-1">
-                      {goal.tips.slice(0, 2).map((tip: string, tipIdx: number) => (
-                        <li key={tipIdx} className="list-disc list-inside">
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
+            {report.goals
+              .filter(goal => !goal.goal_type?.toLowerCase().includes("sleep_improvement") && !goal.goal_type?.toLowerCase().includes("stress_reduction"))
+              .map((goal: any, idx: number) => (
+                <div key={idx} className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                  <div className="flex justify-between items-start mb-2">
+                    <p className="font-semibold text-purple-900 capitalize">{goal.goal_type?.replace(/_/g, " ")}</p>
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded ${
+                        goal.status === "completed" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
+                      {goal.status}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))}
+                  <p className="text-sm text-purple-800 mb-2">
+                    Current: <span className="font-semibold">{goal.current?.toFixed(2)}</span> / Target:{" "}
+                    <span className="font-semibold">{goal.target?.toFixed(2)}</span>
+                  </p>
+                  <div className="w-full bg-gray-300 rounded-full h-2 mb-2">
+                    <div
+                      className="h-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 transition-all"
+                      style={{ width: `${Math.min(100, goal.progress_pct)}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-purple-700 mb-3">{goal.progress_pct?.toFixed(1)}% complete</p>
+                  {goal.tips && goal.tips.length > 0 && (
+                    <div className="bg-white rounded p-2 border border-purple-200">
+                      <p className="text-xs font-medium text-purple-800 mb-1">💡 Tips:</p>
+                      <ul className="text-xs text-purple-700 space-y-1">
+                        {goal.tips.slice(0, 2).map((tip: string, tipIdx: number) => (
+                          <li key={tipIdx} className="list-disc list-inside">
+                            {tip}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
         </div>
       )}

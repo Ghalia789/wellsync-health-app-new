@@ -99,6 +99,7 @@ const GoalForm = ({ initial, onSaved, onCancel }: Props) => {
       if (!initial?._id && (type === "SLEEP_IMPROVEMENT" || type === "STRESS_REDUCTION")) {
         setGoalCreated(true);
         setShowQuestionnaire(true);
+        return;
       }
 
       onSaved && onSaved(data.goal || data);
@@ -115,6 +116,7 @@ const GoalForm = ({ initial, onSaved, onCancel }: Props) => {
       onSaved: () => {
         setShowQuestionnaire(false);
         setGoalCreated(false);
+        
       },
       onCancel: () => {
         setShowQuestionnaire(false);
