@@ -8,6 +8,7 @@ interface ProfileFormData {
   birthDate: string;
   height: number | string;
   weight: number | string;
+  sexe: "male" | "female";
 }
 
 interface ProfileFormProps {
@@ -18,7 +19,7 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({
-  initialData = { birthDate: "", height: "", weight: "" },
+  initialData = { birthDate: "", height: "", weight: "", sexe: "male" },
   isEditMode = false,
   onSubmit,
   isLoading = false,
@@ -56,19 +57,22 @@ export default function ProfileForm({
       }
     }
 
+    if (!formData.sexe || (formData.sexe !== "male" && formData.sexe !== "female")) {
+      newErrors.sexe = "Please select your gender";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target as HTMLInputElement;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    // Clear error for this field when user starts typing
+    // Clear error for this field when user starts typing/selecting
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -128,6 +132,16 @@ export default function ProfileForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto">
+      <FormField
+        label="Gender"
+        name="sexe"
+        type="select"
+        value={formData.sexe}
+        onChange={handleInputChange}
+        error={errors.sexe}
+        helpText="Select your gender for personalized health insights"
+        options={[{ label: "Male", value: "male" }, { label: "Female", value: "female" }]}
+      />
       <FormField
         label="Date of Birth"
         type="date"

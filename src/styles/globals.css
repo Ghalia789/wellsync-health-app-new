@@ -94,6 +94,37 @@
   --glaucous-700: #9db2d7;
   --glaucous-800: #becce4;
   --glaucous-900: #dee5f2;
+
+  /* Gray Scale - Profile Page */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-900: #111827;
+
+  /* Blue - Profile (Birth Date) */
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+
+  /* Green - Profile (Height) */
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+
+  /* Purple - Profile (Weight) */
+  --purple-50: #faf5ff;
+  --purple-100: #f3e8ff;
+
+  /* Card Background - White containers */
+  --card-bg: #ffffff;
+
+  /* Navbar Text Colors */
+  --navbar-text: #ffffff;
+  --navbar-text-hover: #ffffff;
+  --navbar-link-underline: #e2f3ea;
+  --dropdown-bg: #ffffff;
+  --dropdown-text: #374151;
+  --dropdown-hover-bg: #588d4c;
+  --dropdown-hover-text: #ffffff;
 }
 
 /* Tailwind theme mapping */
@@ -157,6 +188,37 @@ html[data-theme="dark"] {
   --air-700: #32668b;
   --air-800: #22445d;
   --air-900: #11222e;
+
+  /* Gray Scale - Profile Page (Dark Mode) */
+  --gray-50: #0f172a;
+  --gray-100: #1a202c;
+  --gray-500: #9ca3af;
+  --gray-600: #d1d5db;
+  --gray-900: #f3f4f6;
+
+  /* Blue - Profile (Birth Date) Dark Mode */
+  --blue-50: #0c1929;
+  --blue-100: #1e3a5f;
+
+  /* Green - Profile (Height) Dark Mode */
+  --green-50: #1a2e1b;
+  --green-100: #355c36;
+
+  /* Purple - Profile (Weight) Dark Mode */
+  --purple-50: #2d1e47;
+  --purple-100: #563a7a;
+
+  /* Navbar Text Colors - Dark Mode */
+  --navbar-text: #1a1a1a;
+  --navbar-text-hover: #000000;
+  --navbar-link-underline: #37815b;
+  --dropdown-bg: #1f2937;
+  --dropdown-text: #e5e7eb;
+  --dropdown-hover-bg: #374151;
+  --dropdown-hover-text: #ffffff;
+
+  /* Card Background - White containers in dark mode */
+  --card-bg: #1f2937;
 }
 
 /* Pas de color-scheme → évite le dégradé noir/blanc automatique */

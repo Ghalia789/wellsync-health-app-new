@@ -1,13 +1,13 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React from "react";
 
 interface FormFieldProps {
   label: string;
-  type: "text" | "email" | "password" | "number" | "date" | "textarea";
+  type: "text" | "email" | "password" | "number" | "date" | "textarea" | "select";
   name: string;
   value: string | number | undefined;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   placeholder?: string;
   required?: boolean;
   min?: number | string;
@@ -16,6 +16,7 @@ interface FormFieldProps {
   error?: string;
   helpText?: string;
   disabled?: boolean;
+  options?: { label: string; value: string }[];
 }
 
 export default function FormField({
@@ -32,6 +33,7 @@ export default function FormField({
   error,
   helpText,
   disabled,
+  options,
 }: FormFieldProps) {
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[var(--mint-500)] focus:border-transparent transition";
@@ -56,6 +58,20 @@ export default function FormField({
           className={`${baseInputClasses} ${errorClasses} resize-none`}
           rows={4}
         />
+      ) : type === "select" ? (
+        <select
+          name={name}
+          value={value || ""}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          className={`${baseInputClasses} ${errorClasses}`}
+        >
+          <option value="" disabled>Select...</option>
+          {options && options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
       ) : (
         <input
           type={type}

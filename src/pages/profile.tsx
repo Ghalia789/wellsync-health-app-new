@@ -124,8 +124,8 @@ const ProfilePage = () => {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-gray-500 text-center animate-pulse">
+        <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--gray-50)', color: 'var(--gray-500)'}}>
+          <div className="text-center animate-pulse" style={{color: 'var(--gray-500)'}}>
             <div className="text-lg">Loading your profile...</div>
           </div>
         </div>
@@ -140,44 +140,44 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8" style={{backgroundColor: 'var(--gray-50)'}}>
         <div className="max-w-4xl mx-auto">
           {!profile && !isEditMode ? (
             // No profile exists - show CTA
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="rounded-lg shadow-md p-8 text-center" style={{backgroundColor: 'var(--card-bg)'}}>
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold mb-2" style={{color: 'var(--gray-900)'}}>
                   Complete Your Health Profile
                 </h1>
-                <p className="text-gray-600 text-lg">
+                <p className="text-lg" style={{color: 'var(--gray-600)'}}>
                   Tell us about yourself so we can better serve your health
                   needs.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
-                <div className="bg-blue-50 p-6 rounded-lg">
+                <div className="p-6 rounded-lg" style={{backgroundColor: 'var(--blue-50)'}}>
                   <div className="text-4xl mb-3">🎂</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="font-semibold mb-2" style={{color: 'var(--gray-900)'}}>
                     Birth Date
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-sm" style={{color: 'var(--gray-600)'}}>
                     Helps us calculate your health metrics
                   </p>
                 </div>
 
-                <div className="bg-green-50 p-6 rounded-lg">
+                <div className="p-6 rounded-lg" style={{backgroundColor: 'var(--green-50)'}}>
                   <div className="text-4xl mb-3">📏</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Height</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="font-semibold mb-2" style={{color: 'var(--gray-900)'}}>Height</h3>
+                  <p className="text-sm" style={{color: 'var(--gray-600)'}}>
                     Essential for BMI calculation
                   </p>
                 </div>
 
-                <div className="bg-purple-50 p-6 rounded-lg">
+                <div className="p-6 rounded-lg" style={{backgroundColor: 'var(--purple-50)'}}>
                   <div className="text-4xl mb-3">⚖️</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Weight</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="font-semibold mb-2" style={{color: 'var(--gray-900)'}}>Weight</h3>
+                  <p className="text-sm" style={{color: 'var(--gray-600)'}}>
                     Track your wellness journey
                   </p>
                 </div>
@@ -192,9 +192,9 @@ const ProfilePage = () => {
             </div>
           ) : (
             // Profile exists or editing mode
-            <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="rounded-lg shadow-md p-8" style={{backgroundColor: 'var(--card-bg)'}}>
               <div className="flex items-center justify-between mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold" style={{color: 'var(--gray-900)'}}>
                   {isEditMode ? "Edit Your Health Profile" : "Your Health Profile"}
                 </h1>
                 {profile && !isEditMode && (
@@ -224,11 +224,11 @@ const ProfilePage = () => {
                 // View mode
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
-                      <p className="text-gray-600 text-sm font-medium mb-2">
+                    <div className="p-6 rounded-lg" style={{background: `linear-gradient(to bottom right, var(--blue-50), var(--blue-100))`}}>
+                      <p className="text-sm font-medium mb-2" style={{color: 'var(--gray-600)'}}>
                         Birth Date
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold" style={{color: 'var(--gray-900)'}}>
                         {profile?.birthDate
                           ? new Date(profile.birthDate).toLocaleDateString(
                               "en-US",
@@ -242,27 +242,27 @@ const ProfilePage = () => {
                       </p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
-                      <p className="text-gray-600 text-sm font-medium mb-2">
+                    <div className="p-6 rounded-lg" style={{background: `linear-gradient(to bottom right, var(--green-50), var(--green-100))`}}>
+                      <p className="text-sm font-medium mb-2" style={{color: 'var(--gray-600)'}}>
                         Height
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold" style={{color: 'var(--gray-900)'}}>
                         {profile?.height ? `${profile.height} cm` : "Not set"}
                       </p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
-                      <p className="text-gray-600 text-sm font-medium mb-2">
+                    <div className="p-6 rounded-lg" style={{background: `linear-gradient(to bottom right, var(--purple-50), var(--purple-100))`}}>
+                      <p className="text-sm font-medium mb-2" style={{color: 'var(--gray-600)'}}>
                         Weight
                       </p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-bold" style={{color: 'var(--gray-900)'}}>
                         {profile?.weight ? `${profile.weight} kg` : "Not set"}
                       </p>
                     </div>
                   </div>
 
                   {profile?.updatedAt && (
-                    <div className="text-center text-gray-500 text-sm">
+                    <div className="text-center text-sm" style={{color: 'var(--gray-500)'}}>
                       Last updated on{" "}
                       {new Date(profile.updatedAt).toLocaleDateString(
                         "en-US",
