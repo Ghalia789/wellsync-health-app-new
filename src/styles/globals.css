@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  --font-poppins: "Poppins", sans-serif;
+  --font-nunito: "Nunito", sans-serif;
+
+  /* Mint */
+  --mint-100: #122b1e;
+  --mint-200: #25563c;
+  --mint-300: #37815b;
+  --mint-400: #49ab79;
+  --mint-500: #72c298;
+  --mint-600: #8dceac;
+  --mint-700: #a9dac1;
+  --mint-800: #c6e7d6;
+  --mint-900: #e2f3ea;
+
+  /* Air Superiority Blue */
+  --air-100: #11222e;
+  --air-200: #22445d;
+  --air-300: #32668b;
+  --air-400: #4388ba;
+  --air-500: #6fa5cb;
+  --air-600: #8db8d6;
+  --air-700: #aac9e0;
+  --air-800: #c6dbea;
+  --air-900: #e3edf5;
+
+  /* Tea Green */
+  --tea-100: #27331c;
+  --tea-200: #4d6538;
+  --tea-300: #749854;
+  --tea-400: #9bb981;
+  --tea-500: #c3d5b3;
+  --tea-600: #cfdec2;
+  --tea-700: #dbe6d2;
+  --tea-800: #e7eee1;
+  --tea-900: #f3f7f0;
+
+  /* Azure Web */
+  --azure-100: #213536;
+  --azure-200: #416a6c;
+  --azure-300: #639ea1;
+  --azure-400: #99c0c2;
+  --azure-500: #d0e2e3;
+  --azure-600: #d9e7e8;
+  --azure-700: #e2edee;
+  --azure-800: #ecf3f4;
+  --azure-900: #f5f9f9;
+
+  /* Indian Red */
+  --red-100: #330d0c;
+  --red-200: #651b17;
+  --red-300: #982823;
+  --red-400: #cb362e;
+  --red-500: #db645e;
+  --red-600: #e2827d;
+  --red-700: #e9a19e;
+  --red-800: #f0c1be;
+  --red-900: #f8e0df;
+
+  /* Harvest Gold */
+  --gold-100: #2d2005;
+  --gold-200: #59400a;
+  --gold-300: #866110;
+  --gold-400: #b38115;
+  --gold-500: #dfa11a;
+  --gold-600: #e9b545;
+  --gold-700: #efc873;
+  --gold-800: #f4daa2;
+  --gold-900: #faedd0;
+
+  /* Asparagus */
+  --asp-100: #162313;
+  --asp-200: #2c4626;
+  --asp-300: #426939;
+  --asp-400: #588d4c;
+  --asp-500: #6faa62;
+  --asp-600: #8dbc82;
+  --asp-700: #a9cda2;
+  --asp-800: #c6ddc1;
+  --asp-900: #e2eee0;
+
+  /* Glaucous */
+  --glaucous-100: #101928;
+  --glaucous-200: #213250;
+  --glaucous-300: #314b77;
+  --glaucous-400: #41649f;
+  --glaucous-500: #5c80bc;
+  --glaucous-600: #7d99ca;
+  --glaucous-700: #9db2d7;
+  --glaucous-800: #becce4;
+  --glaucous-900: #dee5f2;
+
+  /* Gray Scale - Profile Page */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-900: #111827;
+
+  /* Blue - Profile (Birth Date) */
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+
+  /* Green - Profile (Height) */
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+
+  /* Purple - Profile (Weight) */
+  --purple-50: #faf5ff;
+  --purple-100: #f3e8ff;
+
+  /* Card Background - White containers */
+  --card-bg: #ffffff;
+
+  /* Navbar Text Colors */
+  --navbar-text: #ffffff;
+  --navbar-text-hover: #ffffff;
+  --navbar-link-underline: #e2f3ea;
+  --dropdown-bg: #ffffff;
+  --dropdown-text: #374151;
+  --dropdown-hover-bg: #588d4c;
+  --dropdown-hover-text: #ffffff;
+}
+
+/* Tailwind theme mapping */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins);
+  --font-alt: var(--font-nunito);
+}
+
+/* ---------------- DARK MODE (inversion de toutes les palettes) ---------------- */
+/* ---------------- THEMES MANUELS UNIQUEMENT ---------------- */
+
+html[data-theme="light"] {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Light (normal) */
+  --mint-100: #122b1e;
+  --mint-200: #25563c;
+  --mint-300: #37815b;
+  --mint-400: #49ab79;
+  --mint-500: #72c298;
+  --mint-600: #8dceac;
+  --mint-700: #a9dac1;
+  --mint-800: #c6e7d6;
+  --mint-900: #e2f3ea;
+
+  --air-100: #11222e;
+  --air-200: #22445d;
+  --air-300: #32668b;
+  --air-400: #4388ba;
+  --air-500: #6fa5cb;
+  --air-600: #8db8d6;
+  --air-700: #aac9e0;
+  --air-800: #c6dbea;
+  --air-900: #e3edf5;
+}
+
+/* 🔥 DARK MODE INVERSION COMPLÈTE ICI */
+html[data-theme="dark"] {
+  --background: #0a0a0a;
+  /* --foreground: #ededed; */
+
+  --mint-100: #e2f3ea;
+  --mint-200: #c6e7d6;
+  --mint-300: #a9dac1;
+  --mint-400: #8dceac;
+  --mint-500: #72c298;
+  --mint-600: #49ab79;
+  --mint-700: #37815b;
+  --mint-800: #25563c;
+  --mint-900: #122b1e;
+
+  --air-100: #e3edf5;
+  --air-200: #c6dbea;
+  --air-300: #aac9e0;
+  --air-400: #8db8d6;
+  --air-500: #6fa5cb;
+  --air-600: #4388ba;
+  --air-700: #32668b;
+  --air-800: #22445d;
+  --air-900: #11222e;
+
+  /* Gray Scale - Profile Page (Dark Mode) */
+  --gray-50: #0f172a;
+  --gray-100: #1a202c;
+  --gray-500: #9ca3af;
+  --gray-600: #d1d5db;
+  --gray-900: #f3f4f6;
+
+  /* Blue - Profile (Birth Date) Dark Mode */
+  --blue-50: #0c1929;
+  --blue-100: #1e3a5f;
+
+  /* Green - Profile (Height) Dark Mode */
+  --green-50: #1a2e1b;
+  --green-100: #355c36;
+
+  /* Purple - Profile (Weight) Dark Mode */
+  --purple-50: #2d1e47;
+  --purple-100: #563a7a;
+
+  /* Navbar Text Colors - Dark Mode */
+  --navbar-text: #1a1a1a;
+  --navbar-text-hover: #000000;
+  --navbar-link-underline: #37815b;
+  --dropdown-bg: #1f2937;
+  --dropdown-text: #e5e7eb;
+  --dropdown-hover-bg: #374151;
+  --dropdown-hover-text: #ffffff;
+
+  /* Card Background - White containers in dark mode */
+  --card-bg: #1f2937;
+}
+
+/* Pas de color-scheme → évite le dégradé noir/blanc automatique */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), var(--font-nunito), sans-serif;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
