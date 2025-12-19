@@ -5,12 +5,27 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
+import { getSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if ((session?.user as any)?.isAdmin) {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
+    }
+  }, [status, session, router]);
 
   // Toast si l’utilisateur revient de Google Auth
   useEffect(() => {
@@ -39,7 +54,6 @@ export default function Login() {
       redirect: false,
       email,
       password,
-      callbackUrl: "/dashboard",
     });
 
     toast.dismiss(loadingToast);
@@ -48,31 +62,17 @@ export default function Login() {
       toast.error("❌ Identifiants incorrects ou compte inexistant.", {
         duration: 6000,
         position: "top-center",
-        icon: "💥",
-        style: {
-          borderRadius: "8px",
-          background: "#ef4444",
-          color: "#fff",
-          fontFamily: "Poppins, sans-serif",
-          fontWeight: 500,
-        },
       });
     } else {
       toast.success("✅ Connexion réussie ! Bienvenue 👋", {
-        duration: 6000,
+        duration: 4000,
         position: "top-center",
-        icon: "🚀",
-        style: {
-          borderRadius: "8px",
-          background: "#16a34a",
-          color: "#fff",
-          fontFamily: "Poppins, sans-serif",
-          fontWeight: 500,
-        },
       });
-      setTimeout(() => router.push("/dashboard"), 2000);
+      // ❌ PAS DE router.push ICI
     }
   };
+
+
 
   return (
     <div className="grid grid-cols-5 min-h-screen bg-white">

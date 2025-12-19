@@ -20,8 +20,8 @@ export const authOptions: NextAuthOptions = {
         await connectMongo();
 
         const user = await User.findOne({ email: credentials?.email });
-
         if (!user) throw new Error("Utilisateur introuvable !");
+
         const isValid = await bcrypt.compare(
           credentials!.password,
           user.password
@@ -30,11 +30,11 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user._id.toString(),
-          name: user.name,
           email: user.email,
-          role: user.role,
-        };
+          name: user.name,
+        } as any;
       },
+
     }),
 
     // Login via Google
@@ -52,55 +52,51 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    // SIGN IN → assure que l'utilisateur Google existe dans MongoDB
     async signIn({ user, account }) {
       await connectMongo();
 
       let existingUser = await User.findOne({ email: user.email });
 
-      // Si user Google n'existe pas → le créer
       if (!existingUser && account?.provider === "google") {
         existingUser = await User.create({
           name: user.name,
           email: user.email,
-          password: "google-auth", // useless mais obligatoire
-          role: "user",
+          password: "google-auth",
         });
       }
 
-
-      // Important : on injecte l’ObjectId de MongoDB dans "user.id"
-      if (existingUser) user.id = existingUser._id.toString();
+      if (existingUser) {
+        user.id = existingUser._id.toString();
+        (user as any).isAdmin = user.email === "admin@wellsync.com";
+      }
 
       return true;
     },
 
-      // JWT → stocke l'ObjectId Mongo dans le token
-      async jwt({ token, user, account }) {
-        if (user) {
-          token.user = {
-            id: user.id as string,
-            name: user.name,
-            email: user.email,
-            role: (user as any).role ?? "user",
-          };
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.user = {
+          id: (user as any).id,
+          name: user.name,
+          email: user.email,
+          isAdmin: (user as any).isAdmin ?? false,
+        } as any;
 
-          // ✅ Google Auth flag (FIABLE)
-          token.isGoogleUser = account?.provider === "google";
-        }
+        token.isGoogleUser = account?.provider === "google";
+      }
 
-        return token;
-      },
+      return token;
+    },
 
-
-    // SESSION → renvoie token.user au front-end
     async session({ session, token }) {
       session.user = token.user as any;
+      // session.user.isAdmin = (token.user as any)?.isAdmin ?? false;
       session.user.isGoogleUser = token.isGoogleUser as boolean;
       return session;
     },
-    
   },
+
+
 
   pages: {
     signIn: "/login",
